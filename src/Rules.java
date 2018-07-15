@@ -6,7 +6,7 @@ class Rules {
 
     }
 
-    boolean isAllowedPlay(List<Card> playedCards, List<Card> cardsToPlay) {
+    boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
         return false;
     }
 }

@@ -19,7 +19,7 @@ class Player {
         return cardsToPlay;
     }
 
-    void addCardsToHand(List<Card> cards) {
-        this.hand.addAll(cards);
+    void addCardToHand(Card card) {
+        this.hand.add(card);
     }
 }

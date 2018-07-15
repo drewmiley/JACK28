@@ -15,8 +15,12 @@ class Pile {
         this.rules = rules;
     }
 
+    Card topCard() {
+        return this.cards.get(this.cards.size() - 1);
+    }
+
     boolean play(List<Card> cards) {
-        boolean allowedPlay = this.rules.isAllowedPlay(this.cards, cards);
+        boolean allowedPlay = this.rules.isAllowedPlay(this.topCard(), cards);
         if (allowedPlay) {
             this.cards.addAll(cards);
         }
