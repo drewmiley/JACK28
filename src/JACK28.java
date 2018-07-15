@@ -19,11 +19,17 @@ public class JACK28 {
                     return new Player(hand, rules, topCard);
                 })
                 .collect(Collectors.toList());
-        playGame(deck, pile, players);
+        State initialState = new State(deck, pile, players);
+        State finalState = playGame(initialState);
+        System.out.println("JACK28 Complete");
     }
 
-    private static void playGame(Deck deck, Pile pile, List<Player> players) {
-        System.out.println("Hello, World");
+    private static State playGame(State state) {
+        // TODO: Implement correct game end condition- one player has zero cards
+        for (int i = 0; i < 50; i++) {
+            state.takeTurn();
+        }
+        return state;
     }
 
 }
