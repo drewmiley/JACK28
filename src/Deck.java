@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class Deck {
 
@@ -7,9 +9,9 @@ class Deck {
     private boolean orderSeen;
 
     Deck() {
-        List<Card> unshuffledCards = new ArrayList<>();
-        // TODO: Add all cards, iterate over enums
-        unshuffledCards.add(new Card(FaceValue.ACE, Suit.CLUBS));
+        List<Card> unshuffledCards = Stream.of(FaceValue.values())
+                .flatMap(faceValue -> Stream.of(Suit.values()).map(suit -> new Card(faceValue, suit)))
+                .collect(Collectors.toList());
         this.cards = shuffle(unshuffledCards);
         this.orderSeen = false;
     }
