@@ -7,6 +7,7 @@ class Rules {
     }
 
     boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
-        return false;
+        // TODO: Implement Simple check on suit or number
+        return true;
     }
 }

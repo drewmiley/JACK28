@@ -32,4 +32,8 @@ class Deck {
         this.cards.remove(card);
         return card;
     }
+
+    boolean empty() {
+        return cards.isEmpty();
+    }
 }
