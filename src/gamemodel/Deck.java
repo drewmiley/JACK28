@@ -1,15 +1,17 @@
+package gamemodel;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class Deck {
+public class Deck {
 
     private List<Card> cards;
     private boolean orderSeen;
 
-    Deck() {
+    public Deck() {
         List<Card> cards = Stream.of(FaceValue.values())
                 .flatMap(faceValue -> Stream.of(Suit.values()).map(suit -> new Card(faceValue, suit)))
                 .collect(Collectors.toList());
@@ -18,22 +20,22 @@ class Deck {
         this.orderSeen = false;
     }
 
-    Deck(List<Card> cards) {
+    public Deck(List<Card> cards) {
         this.cards = cards;
         this.orderSeen = true;
     }
 
-    List<Card> orderSeenCards() {
+    public List<Card> orderSeenCards() {
         return this.orderSeen ? this.cards : new ArrayList<>();
     }
 
-    Card draw() {
+    public Card draw() {
         Card card = this.cards.get(this.cards.size() - 1);
         this.cards.remove(card);
         return card;
     }
 
-    boolean empty() {
+    public boolean empty() {
         return cards.isEmpty();
     }
 }

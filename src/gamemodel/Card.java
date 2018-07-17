@@ -1,4 +1,6 @@
-class Card {
+package gamemodel;
+
+public class Card {
 
     private FaceValue faceValue;
     private Suit suit;

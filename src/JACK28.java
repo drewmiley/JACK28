@@ -1,3 +1,9 @@
+import gamemodel.Card;
+import gamemodel.Deck;
+import gamemodel.Pile;
+import gamemodel.Rules;
+import players.DummyPlayer;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +31,7 @@ public class JACK28 {
     }
 
     private static State playGame(State state) {
-        while (state.players.stream().noneMatch(DummyPlayer::handEmpty)) {
+        while (!state.gameComplete()) {
             state.takeTurn();
         }
         return state;

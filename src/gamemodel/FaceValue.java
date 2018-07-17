@@ -1,3 +1,5 @@
+package gamemodel;
+
 enum FaceValue {
     ACE,
     TWO,

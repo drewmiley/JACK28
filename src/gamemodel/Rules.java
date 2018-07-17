@@ -1,12 +1,14 @@
+package gamemodel;
+
 import java.util.List;
 
-class Rules {
+public class Rules {
 
-    Rules() {
+    public Rules() {
 
     }
 
-    boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
+    public boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
         return cardsToPlay.size() == 1 &&
                 (cardsToPlay.get(0).getFaceValue() == topCard.getFaceValue() ||
                 cardsToPlay.get(0).getSuit() == topCard.getSuit());

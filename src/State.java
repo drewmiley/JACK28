@@ -1,20 +1,31 @@
+import gamemodel.Card;
+import gamemodel.Deck;
+import gamemodel.Pile;
+import gamemodel.Rules;
+import players.DummyPlayer;
+import players.Player;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 class State {
 
-    Rules rules;
-    Deck deck;
-    Pile pile;
-    List<DummyPlayer> players;
-    int playerIndexTurn = 0;
+    private Rules rules;
+    private Deck deck;
+    private Pile pile;
+    private List<DummyPlayer> players;
+    private int playerIndexTurn = 0;
 
     State(Rules rules, Deck deck, Pile pile, List<DummyPlayer> players) {
         this.rules = rules;
         this.deck = deck;
         this.pile = pile;
         this.players = players;
+    }
+
+    boolean gameComplete() {
+        return this.players.stream().anyMatch(Player::handEmpty);
     }
 
     void takeTurn() {
