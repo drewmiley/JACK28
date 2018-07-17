@@ -10,9 +10,16 @@ class DummyPlayer extends Player {
     @Override
     List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<Player> nonTurnPlayers) {
         List<Card> cardsToPlay = new ArrayList<>();
-        Card card = this.hand.get(this.hand.size() - 1);
-        cardsToPlay.add(card);
-        this.hand.remove(card);
+        Card card = this.hand.stream()
+                .filter(d ->
+                        d.getFaceValue() == pile.topCard().getFaceValue() ||
+                                d.getSuit() == pile.topCard().getSuit()
+                ).findFirst()
+                .orElse(null);
+        if (card != null) {
+            cardsToPlay.add(card);
+            this.hand.remove(card);
+        }
         return cardsToPlay;
     }
 
