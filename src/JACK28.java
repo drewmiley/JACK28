@@ -2,7 +2,9 @@ import gamemodel.Card;
 import gamemodel.Deck;
 import gamemodel.Pile;
 import gamemodel.Rules;
-import players.DummyPlayer;
+import players.Player;
+import players.PlayerGenerator;
+import players.PlayerTypes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,12 +19,13 @@ public class JACK28 {
         Deck deck = new Deck();
         Card topCard = deck.draw();
         Pile pile = new Pile(topCard);
-        List<DummyPlayer> players = Arrays.stream(new Integer[NUMBER_OF_PLAYERS])
+        PlayerGenerator playerGenerator = new PlayerGenerator();
+        List<Player> players = Arrays.stream(new Integer[NUMBER_OF_PLAYERS])
                 .map(a -> {
                     List<Card> hand = Arrays.stream(new Integer[INITIAL_HAND_SIZE])
                             .map(b -> deck.draw())
                             .collect(Collectors.toList());
-                    return new DummyPlayer(hand);
+                    return playerGenerator.fromEnum(hand, PlayerTypes.DUMMY_PLAYER);
                 })
                 .collect(Collectors.toList());
         State initialState = new State(rules, deck, pile, players);

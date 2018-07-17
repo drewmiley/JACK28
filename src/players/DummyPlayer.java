@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DummyPlayer extends Player {
+class DummyPlayer extends Player {
 
-    public DummyPlayer(List<Card> hand) {
+    DummyPlayer(List<Card> hand) {
         super(hand);
     }
 

@@ -2,7 +2,6 @@ import gamemodel.Card;
 import gamemodel.Deck;
 import gamemodel.Pile;
 import gamemodel.Rules;
-import players.DummyPlayer;
 import players.Player;
 
 import java.util.Collections;
@@ -14,10 +13,10 @@ class State {
     private Rules rules;
     private Deck deck;
     private Pile pile;
-    private List<DummyPlayer> players;
+    private List<Player> players;
     private int playerIndexTurn = 0;
 
-    State(Rules rules, Deck deck, Pile pile, List<DummyPlayer> players) {
+    State(Rules rules, Deck deck, Pile pile, List<Player> players) {
         this.rules = rules;
         this.deck = deck;
         this.pile = pile;
@@ -29,7 +28,7 @@ class State {
     }
 
     void takeTurn() {
-        DummyPlayer player = players.get(playerIndexTurn);
+        Player player = players.get(playerIndexTurn);
         List<Player> nonTurnPlayers = players.stream()
                 .filter(d -> d != player)
                 .collect(Collectors.toList());
