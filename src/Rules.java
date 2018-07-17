@@ -7,7 +7,8 @@ class Rules {
     }
 
     boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
-        // TODO: Implement Simple check on suit or number
-        return true;
+        return cardsToPlay.size() == 1 &&
+                (cardsToPlay.get(0).getFaceValue() == topCard.getFaceValue() ||
+                cardsToPlay.get(0).getSuit() == topCard.getSuit());
     }
 }
