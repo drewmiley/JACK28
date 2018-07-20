@@ -10,7 +10,7 @@ public class Rules {
     public final FaceValue DRAW_CARD = FaceValue.TWO;
     public final int DRAW_CARD_NUMBER = 2;
 
-    public final FaceValue MISS_A_GO = FaceValue.EIGHT;
+    private final FaceValue MISS_A_GO = FaceValue.EIGHT;
 
     public final FaceValue SWITCH_DIRECTION = FaceValue.SEVEN;
     public final boolean CAN_SWITCH_DIRECTION = false;
@@ -23,5 +23,9 @@ public class Rules {
         return cardsToPlay.size() == 1 &&
                 (cardsToPlay.get(0).getFaceValue() == topCard.getFaceValue() ||
                 cardsToPlay.get(0).getSuit() == topCard.getSuit());
+    }
+
+    public boolean isMissAGo(List<Card> cardsToPlay) {
+        return cardsToPlay.get(cardsToPlay.size() - 1).getFaceValue() == MISS_A_GO;
     }
 }

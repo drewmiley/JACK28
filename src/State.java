@@ -44,10 +44,14 @@ class State {
                 Card pileTopCard = pile.topCard();
                 pile = new Pile(pileTopCard);
             }
+            boolean missAGo = rules.isMissAGo(cardsToPlay);
+            if (missAGo) {
+                playerIndexTurn++;
+            }
         }
         playerIndexTurn++;
-        if (playerIndexTurn == players.size()) {
-            playerIndexTurn = 0;
+        if (playerIndexTurn >= players.size()) {
+            playerIndexTurn -= players.size();
         }
     }
 }
