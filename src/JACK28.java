@@ -15,22 +15,26 @@ public class JACK28 {
     public static void main(String[] args) {
         int NUMBER_OF_PLAYERS = 2;
         int INITIAL_HAND_SIZE = 7;
+        State initialState = initialState(NUMBER_OF_PLAYERS, INITIAL_HAND_SIZE);
+        State finalState = playGame(initialState);
+        System.out.println("JACK28 Complete");
+    }
+
+    private static State initialState(int numberOfPlayers, int initialHandSize) {
         Rules rules = new Rules();
         Deck deck = new Deck();
         Card topCard = deck.draw();
         Pile pile = new Pile(topCard);
         PlayerGenerator playerGenerator = new PlayerGenerator();
-        List<Player> players = Arrays.stream(new Integer[NUMBER_OF_PLAYERS])
+        List<Player> players = Arrays.stream(new Integer[numberOfPlayers])
                 .map(a -> {
-                    List<Card> hand = Arrays.stream(new Integer[INITIAL_HAND_SIZE])
+                    List<Card> hand = Arrays.stream(new Integer[initialHandSize])
                             .map(b -> deck.draw())
                             .collect(Collectors.toList());
                     return playerGenerator.fromEnum(hand, PlayerTypes.DUMMY_PLAYER);
                 })
                 .collect(Collectors.toList());
-        State initialState = new State(rules, deck, pile, players);
-        State finalState = playGame(initialState);
-        System.out.println("JACK28 Complete");
+        return new State(rules, deck, pile, players);
     }
 
     private static State playGame(State state) {
