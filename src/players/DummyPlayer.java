@@ -1,9 +1,6 @@
 package players;
 
-import gamemodel.Card;
-import gamemodel.Deck;
-import gamemodel.Pile;
-import gamemodel.Rules;
+import gamemodel.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +20,11 @@ class DummyPlayer extends Player {
         List<Card> cardsToPlay = cardOptions.isEmpty() ? cardOptions : cardOptions.subList(0, 1);
         this.hand.removeAll(cardsToPlay);
         return cardsToPlay;
+    }
+
+    @Override
+    public Suit nomination(Rules rules, Deck deck, Pile pile, List<Player> nonTurnPlayers) {
+        return Suit.values()[(int) Math.floor(Suit.values().length * Math.random())];
     }
 
 }

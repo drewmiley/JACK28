@@ -9,7 +9,10 @@ public class Pile {
     private List<Card> cards;
 
     public List<Card> getCardsBelowTopCard() {
-        return this.cards.subList(0, this.cards.size() - 2);
+        return this.cards.subList(0, this.cards.size() - 2)
+                .stream()
+                .filter(card -> card.getFaceValue() != null)
+                .collect(Collectors.toList());
     }
 
     public Pile(Card card) {
@@ -26,5 +29,9 @@ public class Pile {
             this.cards.addAll(cards);
         }
         return allowedPlay;
+    }
+
+    public void nominate(Suit nominatedSuit) {
+        this.cards.add(new Card(null, nominatedSuit));
     }
 }

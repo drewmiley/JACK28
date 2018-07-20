@@ -1,6 +1,6 @@
 package gamemodel;
 
-enum Suit {
+public enum Suit {
     CLUBS,
     DIAMONDS,
     HEARTS,

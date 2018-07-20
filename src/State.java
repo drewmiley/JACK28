@@ -1,7 +1,4 @@
-import gamemodel.Card;
-import gamemodel.Deck;
-import gamemodel.Pile;
-import gamemodel.Rules;
+import gamemodel.*;
 import players.Player;
 
 import java.util.Collections;
@@ -15,6 +12,7 @@ class State {
     private Pile pile;
     private List<Player> players;
     private int playerIndexTurn = 0;
+    private boolean playerTurnDirection = true;
 
     State(Rules rules, Deck deck, Pile pile, List<Player> players) {
         this.rules = rules;
@@ -34,7 +32,21 @@ class State {
                 .collect(Collectors.toList());
         List<Card> cardsToPlay = player.cardsToPlay(rules, deck, pile, nonTurnPlayers);
         boolean validPlay = pile.play(rules, cardsToPlay);
-        if (!validPlay) {
+        if (validPlay) {
+            boolean missAGo = rules.isMissAGo(cardsToPlay);
+            if (missAGo) {
+                playerIndexTurn++;
+            }
+            boolean nomination = rules.isNomination(cardsToPlay);
+            if (nomination) {
+                Suit nominatedSuit = player.nomination(rules, deck, pile, nonTurnPlayers);
+                pile.nominate(nominatedSuit);
+            }
+            boolean switchDirection = rules.isSwitchDirection(cardsToPlay);
+            if (switchDirection) {
+                playerTurnDirection = !playerTurnDirection;
+            }
+        } else {
             cardsToPlay.forEach(player::addCardToHand);
             player.addCardToHand(deck.draw());
             if (deck.empty()) {
@@ -44,14 +56,17 @@ class State {
                 Card pileTopCard = pile.topCard();
                 pile = new Pile(pileTopCard);
             }
-            boolean missAGo = rules.isMissAGo(cardsToPlay);
-            if (missAGo) {
-                playerIndexTurn++;
-            }
         }
-        playerIndexTurn++;
+        if (playerTurnDirection) {
+            playerIndexTurn++;
+        } else {
+            playerIndexTurn--;
+        }
         if (playerIndexTurn >= players.size()) {
             playerIndexTurn -= players.size();
+        }
+        if (playerIndexTurn < 0) {
+            playerIndexTurn += players.size();
         }
     }
 }
