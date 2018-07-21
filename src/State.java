@@ -27,44 +27,34 @@ class State {
     void takeTurn() {
         Player player = players.get(playerIndexTurn);
         List<Card> cardsToPlay = player.cardsToPlay(rules, deck, pile);
-        boolean validPlay = rules.isAllowedPlay(pile.topCard(), cardsToPlay);
-        if (validPlay) {
-            cardsToPlay.forEach(player::removeCardFromHand);
-            pile.play(cardsToPlay);
-            boolean missAGo = rules.isMissAGo(cardsToPlay);
-            if (missAGo) {
-                playerIndexTurn++;
-            }
-            boolean nomination = rules.isNomination(cardsToPlay);
-            if (nomination) {
-                Suit nominatedSuit = player.nomination(rules, deck, pile);
-                pile.nominate(nominatedSuit);
-            }
-            boolean switchDirection = rules.isSwitchDirection(cardsToPlay);
-            if (switchDirection) {
-                clockwise = !clockwise;
-            }
+        if (rules.isAllowedPlay(pile.topCard(), cardsToPlay)) {
+            playCards(player, pile, cardsToPlay);
+            if (rules.isMissAGo(cardsToPlay)) playerIndexTurn += (clockwise ? 1 : -1);
+            if (rules.isNomination(cardsToPlay)) pile.nominate(player.nomination(rules, deck, pile));
+            if (rules.isSwitchDirection(cardsToPlay)) clockwise = !clockwise;
         } else {
-            cardsToPlay.forEach(player::addCardToHand);
             player.addCardToHand(deck.draw());
-            if (deck.empty()) {
-                List<Card> newDeck = pile.getCardsBelowTopCard();
-                Collections.reverse(newDeck);
-                deck = new Deck(newDeck);
-                Card pileTopCard = pile.topCard();
-                pile = new Pile(pileTopCard);
-            }
+            if (deck.empty()) newDeck();
         }
-        if (clockwise) {
-            playerIndexTurn++;
-        } else {
-            playerIndexTurn--;
-        }
-        if (playerIndexTurn >= players.size()) {
-            playerIndexTurn -= players.size();
-        }
-        if (playerIndexTurn < 0) {
-            playerIndexTurn += players.size();
-        }
+        setPlayerIndexTurn();
+    }
+
+    private void playCards(Player player, Pile pile, List<Card> cardsToPlay) {
+        cardsToPlay.forEach(player::removeCardFromHand);
+        pile.play(cardsToPlay);
+    }
+
+    private void newDeck() {
+        List<Card> newDeck = pile.getCardsBelowTopCard();
+        Collections.reverse(newDeck);
+        deck = new Deck(newDeck);
+        Card pileTopCard = pile.topCard();
+        pile = new Pile(pileTopCard);
+    }
+
+    private void setPlayerIndexTurn() {
+        playerIndexTurn += (clockwise ? 1 : -1);
+        if (playerIndexTurn >= players.size()) playerIndexTurn -= players.size();
+        if (playerIndexTurn < 0) playerIndexTurn += players.size();
     }
 }
