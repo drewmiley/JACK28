@@ -11,12 +11,14 @@ public class Rules {
     public final FaceValue DRAW_CARD = FaceValue.TWO;
     public final int DRAW_CARD_NUMBER = 2;
 
-    private final FaceValue MISS_A_GO = FaceValue.EIGHT;
+    public final FaceValue MISS_A_GO = FaceValue.EIGHT;
 
     public final FaceValue SWITCH_DIRECTION = FaceValue.SEVEN;
     public final boolean CAN_SWITCH_DIRECTION = false;
 
     public final boolean RUN_FACEVALUE = true;
+//    public final boolean RUN_UP_IN_SUIT = false;
+//    public final boolean RUN_DOWN_IN_SUIT = false;
 
     public boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
         if (cardsToPlay.size() == 0) {
@@ -25,12 +27,14 @@ public class Rules {
         boolean firstCardValid = (cardsToPlay.get(0).getFaceValue() == topCard.getFaceValue() ||
                 cardsToPlay.get(0).getSuit() == topCard.getSuit()) ||
                 !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT;
-        boolean validRun = IntStream.range(0, cardsToPlay.size() - 1)
+        return IntStream.range(0, cardsToPlay.size() - 1)
                 .mapToObj(i -> cardsToPlay.subList(i, i + 2))
-                .map(cardPair -> RUN_FACEVALUE && cardPair.get(1).getFaceValue() == cardPair.get(0).getFaceValue())
-                .reduce((a, b) -> a && b)
-                .orElse(true);
-        return firstCardValid && validRun;
+                .map(cardPair -> {
+                    boolean runFaceValue = RUN_FACEVALUE &&
+                            cardPair.get(1).getFaceValue() == cardPair.get(0).getFaceValue();
+                    return runFaceValue;
+                })
+                .reduce(firstCardValid, (a, b) -> a && b);
     }
 
     public boolean isMissAGo(List<Card> cardsToPlay) {
