@@ -23,12 +23,8 @@ public class Pile {
         return this.cards.get(this.cards.size() - 1);
     }
 
-    public boolean play(Rules rules, List<Card> cards) {
-        boolean allowedPlay = rules.isAllowedPlay(this.topCard(), cards);
-        if (allowedPlay) {
-            this.cards.addAll(cards);
-        }
-        return allowedPlay;
+    public void play(List<Card> cards) {
+        this.cards.addAll(cards);
     }
 
     public void nominate(Suit nominatedSuit) {

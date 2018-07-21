@@ -3,7 +3,6 @@ import players.Player;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class State {
 
@@ -12,7 +11,7 @@ class State {
     private Pile pile;
     private List<Player> players;
     private int playerIndexTurn = 0;
-    private boolean playerTurnDirection = true;
+    private boolean clockwise = true;
 
     State(Rules rules, Deck deck, Pile pile, List<Player> players) {
         this.rules = rules;
@@ -28,9 +27,10 @@ class State {
     void takeTurn() {
         Player player = players.get(playerIndexTurn);
         List<Card> cardsToPlay = player.cardsToPlay(rules, deck, pile);
-        boolean validPlay = pile.play(rules, cardsToPlay);
+        boolean validPlay = rules.isAllowedPlay(pile.topCard(), cardsToPlay);
         if (validPlay) {
             cardsToPlay.forEach(player::removeCardFromHand);
+            pile.play(cardsToPlay);
             boolean missAGo = rules.isMissAGo(cardsToPlay);
             if (missAGo) {
                 playerIndexTurn++;
@@ -42,7 +42,7 @@ class State {
             }
             boolean switchDirection = rules.isSwitchDirection(cardsToPlay);
             if (switchDirection) {
-                playerTurnDirection = !playerTurnDirection;
+                clockwise = !clockwise;
             }
         } else {
             cardsToPlay.forEach(player::addCardToHand);
@@ -55,7 +55,7 @@ class State {
                 pile = new Pile(pileTopCard);
             }
         }
-        if (playerTurnDirection) {
+        if (clockwise) {
             playerIndexTurn++;
         } else {
             playerIndexTurn--;
