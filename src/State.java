@@ -27,19 +27,17 @@ class State {
 
     void takeTurn() {
         Player player = players.get(playerIndexTurn);
-        List<Player> nonTurnPlayers = players.stream()
-                .filter(d -> d != player)
-                .collect(Collectors.toList());
-        List<Card> cardsToPlay = player.cardsToPlay(rules, deck, pile, nonTurnPlayers);
+        List<Card> cardsToPlay = player.cardsToPlay(rules, deck, pile);
         boolean validPlay = pile.play(rules, cardsToPlay);
         if (validPlay) {
+            cardsToPlay.forEach(player::removeCardFromHand);
             boolean missAGo = rules.isMissAGo(cardsToPlay);
             if (missAGo) {
                 playerIndexTurn++;
             }
             boolean nomination = rules.isNomination(cardsToPlay);
             if (nomination) {
-                Suit nominatedSuit = player.nomination(rules, deck, pile, nonTurnPlayers);
+                Suit nominatedSuit = player.nomination(rules, deck, pile);
                 pile.nominate(nominatedSuit);
             }
             boolean switchDirection = rules.isSwitchDirection(cardsToPlay);

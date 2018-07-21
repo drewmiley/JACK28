@@ -11,12 +11,16 @@ public abstract class Player {
         this.hand = hand;
     }
 
-    public abstract List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<Player> nonTurnPlayers);
+    public abstract List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile);
 
-    public abstract Suit nomination(Rules rules, Deck deck, Pile pile, List<Player> nonTurnPlayers);
+    public abstract Suit nomination(Rules rules, Deck deck, Pile pile);
 
     public void addCardToHand(Card card) {
         this.hand.add(card);
+    }
+
+    public void removeCardFromHand(Card card) {
+        this.hand.remove(card);
     }
 
     public boolean handEmpty() {
