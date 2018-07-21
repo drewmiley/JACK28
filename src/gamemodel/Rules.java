@@ -17,24 +17,44 @@ public class Rules {
     public final boolean CAN_SWITCH_DIRECTION = false;
 
     public final boolean RUN_FACEVALUE = true;
-//    public final boolean RUN_UP_IN_SUIT = false;
-//    public final boolean RUN_DOWN_IN_SUIT = false;
+    public final boolean RUN_UP_IN_SUIT = false;
+    public final boolean RUN_DOWN_IN_SUIT = false;
+
+    private boolean firstCardValid(Card topCard, List<Card> cardsToPlay) {
+        return !cardsToPlay.isEmpty() &&
+                (cardsToPlay.get(0).getFaceValue() == topCard.getFaceValue() ||
+                        cardsToPlay.get(0).getSuit() == topCard.getSuit()) ||
+                !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT;
+    }
+
+    private boolean runFaceValue(List<Card> cardPair) {
+        return RUN_FACEVALUE &&
+                cardPair.get(1).getFaceValue() == cardPair.get(0).getFaceValue();
+    }
+
+    private boolean runUpInSuit(List<Card> cardPair) {
+        return RUN_UP_IN_SUIT &&
+                cardPair.get(1).getSuit() == cardPair.get(0).getSuit() &&
+                (cardPair.get(1).getFaceValue().ordinal() % FaceValue.values().length ==
+                        (cardPair.get(0).getFaceValue().ordinal() + 1) % FaceValue.values().length);
+    }
+
+    private boolean runDownInSuit(List<Card> cardPair) {
+        return RUN_DOWN_IN_SUIT &&
+                cardPair.get(1).getSuit() == cardPair.get(0).getSuit() &&
+                (cardPair.get(1).getFaceValue().ordinal() % FaceValue.values().length ==
+                        (cardPair.get(0).getFaceValue().ordinal() - 1) % FaceValue.values().length);
+    }
 
     public boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
-        if (cardsToPlay.size() == 0) {
-            return false;
-        }
-        boolean firstCardValid = (cardsToPlay.get(0).getFaceValue() == topCard.getFaceValue() ||
-                cardsToPlay.get(0).getSuit() == topCard.getSuit()) ||
-                !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT;
         return IntStream.range(0, cardsToPlay.size() - 1)
                 .mapToObj(i -> cardsToPlay.subList(i, i + 2))
-                .map(cardPair -> {
-                    boolean runFaceValue = RUN_FACEVALUE &&
-                            cardPair.get(1).getFaceValue() == cardPair.get(0).getFaceValue();
-                    return runFaceValue;
-                })
-                .reduce(firstCardValid, (a, b) -> a && b);
+                .map(cardPair ->
+                        runFaceValue(cardPair) ||
+                        runUpInSuit(cardPair) ||
+                        runDownInSuit(cardPair)
+                )
+                .reduce(firstCardValid(topCard, cardsToPlay), (a, b) -> a && b);
     }
 
     public boolean isMissAGo(List<Card> cardsToPlay) {
