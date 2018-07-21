@@ -25,8 +25,8 @@ public class Deck {
         this.orderSeen = true;
     }
 
-    public List<Card> orderSeenCards() {
-        return this.orderSeen ? this.cards : new ArrayList<>();
+    public boolean orderSeen() {
+        return this.orderSeen;
     }
 
     public Card draw() {

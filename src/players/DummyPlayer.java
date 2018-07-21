@@ -8,12 +8,12 @@ import java.util.stream.Stream;
 
 class DummyPlayer extends Player {
 
-    DummyPlayer(List<Card> hand) {
-        super(hand);
+    DummyPlayer(int playerIndex, List<Card> hand) {
+        super(playerIndex, hand);
     }
 
     @Override
-    public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile) {
+    public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
         List<Card> cardOptions = this.hand.stream()
                 .filter(d -> rules.isAllowedPlay(pile, Stream.of(d).collect(Collectors.toList())))
                 .collect(Collectors.toList());
@@ -21,7 +21,7 @@ class DummyPlayer extends Player {
     }
 
     @Override
-    public Suit nomination(Rules rules, Deck deck, Pile pil) {
+    public Suit nomination(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
         return Suit.values()[(int) Math.floor(Suit.values().length * Math.random())];
     }
 

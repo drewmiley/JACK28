@@ -1,5 +1,6 @@
 import gamemodel.*;
 import players.Player;
+import players.VisiblePlayer;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,12 @@ class State {
     private int playerIndexTurn = 0;
     private boolean clockwise = true;
 
+    private List<VisiblePlayer> visiblePlayers() {
+        return this.players.stream()
+                .map(VisiblePlayer::new)
+                .collect(Collectors.toList());
+    }
+
     State(Rules rules, Deck deck, Pile pile, List<Player> players) {
         this.rules = rules;
         this.deck = deck;
@@ -30,7 +37,7 @@ class State {
 
     void takeTurn() {
         Player player = players.get(playerIndexTurn);
-        List<Card> cardsToPlay = player.cardsToPlay(rules, deck, pile);
+        List<Card> cardsToPlay = player.cardsToPlay(rules, deck, pile, visiblePlayers());
         if (rules.isAllowedPlay(pile, cardsToPlay)) {
             playCards(player, cardsToPlay);
             applySpecialCardRules(cardsToPlay, player);
@@ -40,7 +47,7 @@ class State {
             pile.resetDrawCardActiveRun();
             IntStream.range(0, cardsToDraw)
                     .forEach(i -> {
-                        player.addCardToHand(deck.draw());
+                        player.addCardToHand(deck.draw(), deck.orderSeen());
                         if (deck.empty()) newDeck();
                     });
         }
@@ -54,18 +61,9 @@ class State {
 
     private void applySpecialCardRules(List<Card> cardsToPlay, Player player) {
         if (rules.isMissAGo(cardsToPlay)) playerIndexTurn += (clockwise ? 1 : -1);
-        if (rules.isNomination(cardsToPlay)) pile.nominate(player.nomination(rules, deck, pile));
+        if (rules.isNomination(cardsToPlay)) pile.nominate(player.nomination(rules, deck, pile, visiblePlayers()));
         if (rules.isSwitchDirection(cardsToPlay)) clockwise = !clockwise;
         if (rules.isDrawCard(cardsToPlay)) pile.incrementDrawCardActiveRun();
-    }
-
-    private int getCardsToDraw() {
-        int cardsToDraw = 1;
-        if (pile.getDrawCardActiveRun() > 0) {
-            cardsToDraw = pile.getDrawCardActiveRun() * rules.DRAW_CARD_NUMBER;
-            pile.resetDrawCardActiveRun();
-        }
-        return cardsToDraw;
     }
 
     private void newDeck() {
