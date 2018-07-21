@@ -20,11 +20,12 @@ public class Rules {
     public final boolean RUN_UP_IN_SUIT = false;
     public final boolean RUN_DOWN_IN_SUIT = false;
 
-    private boolean firstCardValid(Card topCard, List<Card> cardsToPlay) {
+    private boolean firstCardValid(Pile pile, List<Card> cardsToPlay) {
         return !cardsToPlay.isEmpty() &&
-                (cardsToPlay.get(0).getFaceValue() == topCard.getFaceValue() ||
-                        cardsToPlay.get(0).getSuit() == topCard.getSuit()) ||
-                !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT;
+                ((pile.getDrawCardActiveRun() == 0 || cardsToPlay.get(0).getFaceValue() == DRAW_CARD) &&
+                (cardsToPlay.get(0).getFaceValue() == pile.topCard().getFaceValue() ||
+                        cardsToPlay.get(0).getSuit() == pile.topCard().getSuit()) ||
+                !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT);
     }
 
     private boolean runFaceValue(List<Card> cardPair) {
@@ -46,7 +47,7 @@ public class Rules {
                         (cardPair.get(0).getFaceValue().ordinal() - 1) % FaceValue.values().length);
     }
 
-    public boolean isAllowedPlay(Card topCard, List<Card> cardsToPlay) {
+    public boolean isAllowedPlay(Pile pile, List<Card> cardsToPlay) {
         return IntStream.range(0, cardsToPlay.size() - 1)
                 .mapToObj(i -> cardsToPlay.subList(i, i + 2))
                 .map(cardPair ->
@@ -54,7 +55,7 @@ public class Rules {
                         runUpInSuit(cardPair) ||
                         runDownInSuit(cardPair)
                 )
-                .reduce(firstCardValid(topCard, cardsToPlay), (a, b) -> a && b);
+                .reduce(firstCardValid(pile, cardsToPlay), (a, b) -> a && b);
     }
 
     public boolean isMissAGo(List<Card> cardsToPlay) {
@@ -67,5 +68,9 @@ public class Rules {
 
     public boolean isSwitchDirection(List<Card> cardsToPlay) {
         return CAN_SWITCH_DIRECTION && cardsToPlay.get(cardsToPlay.size() - 1).getFaceValue() == SWITCH_DIRECTION;
+    }
+
+    public boolean isDrawCard(List<Card> cardsToPlay) {
+        return cardsToPlay.get(cardsToPlay.size() - 1).getFaceValue() == DRAW_CARD;
     }
 }

@@ -8,6 +8,8 @@ public class Pile {
 
     private List<Card> cards;
 
+    private int drawCardActiveRun = 0;
+
     public List<Card> getCardsBelowTopCard() {
         return this.cards.subList(0, this.cards.size() - 2)
                 .stream()
@@ -29,5 +31,17 @@ public class Pile {
 
     public void nominate(Suit nominatedSuit) {
         this.cards.add(new Card(null, nominatedSuit));
+    }
+
+    public int getDrawCardActiveRun() {
+        return drawCardActiveRun;
+    }
+
+    public void resetDrawCardActiveRun() {
+        this.drawCardActiveRun = 0;
+    }
+
+    public void incrementDrawCardActiveRun() {
+        this.drawCardActiveRun++;
     }
 }
