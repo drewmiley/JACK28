@@ -5,7 +5,6 @@ import gamemodel.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -46,6 +45,7 @@ public abstract class Player {
                             .collect(Collectors.toList());
                     possibleCardsToPlay.addAll(result[0]);
                 });
+        possibleCardsToPlay.add(new ArrayList<>());
         return possibleCardsToPlay;
     }
 

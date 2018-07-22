@@ -3,6 +3,7 @@ package players;
 import gamemodel.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,10 +16,7 @@ class DummyPlayer extends Player {
     @Override
     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
         List<List<Card>> possibleCardsToPlay = this.possibleCardsToPlay(rules, pile);
-        List<Card> cardOptions = this.hand.stream()
-                .filter(d -> rules.isAllowedPlay(pile, Stream.of(d).collect(Collectors.toList())))
-                .collect(Collectors.toList());
-        return cardOptions.isEmpty() ? cardOptions : cardOptions.subList(0, 1);
+        return possibleCardsToPlay.get((int) Math.floor(possibleCardsToPlay.size() * Math.random()));
     }
 
     @Override
