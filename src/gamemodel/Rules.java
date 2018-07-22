@@ -20,7 +20,7 @@ public class Rules {
     public final boolean RUN_UP_IN_SUIT = false;
     public final boolean RUN_DOWN_IN_SUIT = false;
 
-    public boolean firstCardValid(Pile pile, List<Card> cardsToPlay) {
+    private boolean firstCardValid(Pile pile, List<Card> cardsToPlay) {
         return !cardsToPlay.isEmpty() &&
                 ((pile.getDrawCardActiveRun() == 0 || cardsToPlay.get(0).getFaceValue() == DRAW_CARD) &&
                 (cardsToPlay.get(0).getFaceValue() == pile.topCard().getFaceValue() ||
@@ -28,19 +28,25 @@ public class Rules {
                 !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT);
     }
 
-    public boolean runFaceValue(List<Card> cardPair) {
+    public boolean runValid(List<Card> cardPair, Pile pile) {
+        return pile.getDrawCardActiveRun() == 0 ?
+                runFaceValue(cardPair) || runUpInSuit(cardPair) || runDownInSuit(cardPair) :
+                cardPair.get(1).getFaceValue() == DRAW_CARD && cardPair.get(0).getFaceValue() == DRAW_CARD;
+    }
+
+    private boolean runFaceValue(List<Card> cardPair) {
         return RUN_FACEVALUE &&
                 cardPair.get(1).getFaceValue() == cardPair.get(0).getFaceValue();
     }
 
-    public boolean runUpInSuit(List<Card> cardPair) {
+    private boolean runUpInSuit(List<Card> cardPair) {
         return RUN_UP_IN_SUIT &&
                 cardPair.get(1).getSuit() == cardPair.get(0).getSuit() &&
                 (cardPair.get(1).getFaceValue().ordinal() % FaceValue.values().length ==
                         (cardPair.get(0).getFaceValue().ordinal() + 1) % FaceValue.values().length);
     }
 
-    public boolean runDownInSuit(List<Card> cardPair) {
+    private boolean runDownInSuit(List<Card> cardPair) {
         return RUN_DOWN_IN_SUIT &&
                 cardPair.get(1).getSuit() == cardPair.get(0).getSuit() &&
                 (cardPair.get(1).getFaceValue().ordinal() % FaceValue.values().length ==
@@ -50,11 +56,7 @@ public class Rules {
     public boolean isAllowedPlay(Pile pile, List<Card> cardsToPlay) {
         return IntStream.range(0, cardsToPlay.size() - 1)
                 .mapToObj(i -> cardsToPlay.subList(i, i + 2))
-                .map(cardPair ->
-                        runFaceValue(cardPair) ||
-                        runUpInSuit(cardPair) ||
-                        runDownInSuit(cardPair)
-                )
+                .map(cardPair -> runValid(cardPair, pile))
                 .reduce(firstCardValid(pile, cardsToPlay), (a, b) -> a && b);
     }
 

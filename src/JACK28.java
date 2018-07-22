@@ -16,9 +16,13 @@ public class JACK28 {
     public static void main(String[] args) {
         int NUMBER_OF_PLAYERS = 2;
         int INITIAL_HAND_SIZE = 7;
-        State initialState = initialState(NUMBER_OF_PLAYERS, INITIAL_HAND_SIZE);
-        State finalState = playGame(initialState);
-        System.out.println("JACK28 Complete");
+        int NUMBER_OF_GAMES = 1000;
+        IntStream.range(0, NUMBER_OF_GAMES)
+                .forEach(i -> {
+                    State initialState = initialState(NUMBER_OF_PLAYERS, INITIAL_HAND_SIZE);
+                    State finalState = playGame(initialState);
+                    System.out.println("JACK28 Complete");
+                });
     }
 
     private static State initialState(int numberOfPlayers, int initialHandSize) {

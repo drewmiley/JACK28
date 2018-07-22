@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public abstract class Player {
-    int playerIndex;
+    private int playerIndex;
     List<Card> hand;
     List<Card> knownHand = new ArrayList<>();
 
@@ -35,8 +35,7 @@ public abstract class Player {
                             .filter(cards -> {
                                 List<Card> cardPair = Stream.of(cards.get(cards.size() - 1), handCard)
                                         .collect(Collectors.toList());
-                                return !cards.contains(handCard) &&
-                                        (rules.runFaceValue(cardPair) || rules.runUpInSuit(cardPair) || rules.runDownInSuit(cardPair));
+                                return !cards.contains(handCard) && rules.runValid(cardPair, pile);
                             })
                             .map(cards -> Stream.concat(
                                             cards.stream(),
