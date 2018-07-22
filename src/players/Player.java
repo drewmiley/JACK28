@@ -3,9 +3,11 @@ package players;
 import gamemodel.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public abstract class Player {
@@ -19,49 +21,32 @@ public abstract class Player {
     }
 
     List<List<Card>> possibleCardsToPlay(Rules rules, Pile pile) {
-        List<List<Card>> result = new ArrayList<>();
-        List<List<Card>> firstCardsValid = hand.stream()
+        List<List<Card>> possibleCardsToPlay = new ArrayList<>();
+        final List<List<Card>>[] result = new List[]{new ArrayList<>()};
+        result[0] = hand.stream()
                 .map(card -> Stream.of(card).collect(Collectors.toList()))
                 .filter(card -> rules.isAllowedPlay(pile, card))
                 .collect(Collectors.toList());
-        result.addAll(firstCardsValid);
-        List<List<Card>> twos = hand.stream()
-                .flatMap(handCard -> firstCardsValid.stream()
-                        .filter(cards -> {
-                            List<Card> cardPair = Stream.of(cards.get(cards.size() - 1), handCard)
-                                    .collect(Collectors.toList());
-                            return !cards.contains(handCard) &&
-                                    (rules.runFaceValue(cardPair) ||
-                                    rules.runUpInSuit(cardPair) ||
-                                    rules.runDownInSuit(cardPair));
-                        })
-                        .map(cards -> {
-                            List<Card> blah = new ArrayList<>(cards);
-                            blah.add(handCard);
-                            return blah;
-                        })
-                )
-                .collect(Collectors.toList());
-        result.addAll(twos);
-        List<List<Card>> threes = hand.stream()
-                .flatMap(handCard -> twos.stream()
-                        .filter(cards -> {
-                            List<Card> cardPair = Stream.of(cards.get(cards.size() - 1), handCard)
-                                    .collect(Collectors.toList());
-                            return !cards.contains(handCard) &&
-                                    (rules.runFaceValue(cardPair) ||
-                                            rules.runUpInSuit(cardPair) ||
-                                            rules.runDownInSuit(cardPair));
-                        })
-                        .map(cards -> {
-                            List<Card> blah = new ArrayList<>(cards);
-                            blah.add(handCard);
-                            return blah;
-                        })
-                )
-                .collect(Collectors.toList());
-        result.addAll(threes);
-        return result;
+        possibleCardsToPlay.addAll(result[0]);
+        IntStream.range(0, hand.size() - 1)
+                .mapToObj(i -> hand)
+                .flatMap(Collection::stream)
+                .forEach(handCard -> {
+                    result[0] = result[0].stream()
+                            .filter(cards -> {
+                                List<Card> cardPair = Stream.of(cards.get(cards.size() - 1), handCard)
+                                        .collect(Collectors.toList());
+                                return !cards.contains(handCard) &&
+                                        (rules.runFaceValue(cardPair) || rules.runUpInSuit(cardPair) || rules.runDownInSuit(cardPair));
+                            })
+                            .map(cards -> Stream.concat(
+                                            cards.stream(),
+                                            Stream.of(handCard).collect(Collectors.toList()).stream()
+                                    ).collect(Collectors.toList()))
+                            .collect(Collectors.toList());
+                    possibleCardsToPlay.addAll(result[0]);
+                });
+        return possibleCardsToPlay;
     }
 
     public abstract List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers);
