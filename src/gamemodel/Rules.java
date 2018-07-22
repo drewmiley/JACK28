@@ -20,7 +20,7 @@ public class Rules {
     public final boolean RUN_UP_IN_SUIT = false;
     public final boolean RUN_DOWN_IN_SUIT = false;
 
-    private boolean firstCardValid(Pile pile, List<Card> cardsToPlay) {
+    public boolean firstCardValid(Pile pile, List<Card> cardsToPlay) {
         return !cardsToPlay.isEmpty() &&
                 ((pile.getDrawCardActiveRun() == 0 || cardsToPlay.get(0).getFaceValue() == DRAW_CARD) &&
                 (cardsToPlay.get(0).getFaceValue() == pile.topCard().getFaceValue() ||
@@ -28,19 +28,19 @@ public class Rules {
                 !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT);
     }
 
-    private boolean runFaceValue(List<Card> cardPair) {
+    public boolean runFaceValue(List<Card> cardPair) {
         return RUN_FACEVALUE &&
                 cardPair.get(1).getFaceValue() == cardPair.get(0).getFaceValue();
     }
 
-    private boolean runUpInSuit(List<Card> cardPair) {
+    public boolean runUpInSuit(List<Card> cardPair) {
         return RUN_UP_IN_SUIT &&
                 cardPair.get(1).getSuit() == cardPair.get(0).getSuit() &&
                 (cardPair.get(1).getFaceValue().ordinal() % FaceValue.values().length ==
                         (cardPair.get(0).getFaceValue().ordinal() + 1) % FaceValue.values().length);
     }
 
-    private boolean runDownInSuit(List<Card> cardPair) {
+    public boolean runDownInSuit(List<Card> cardPair) {
         return RUN_DOWN_IN_SUIT &&
                 cardPair.get(1).getSuit() == cardPair.get(0).getSuit() &&
                 (cardPair.get(1).getFaceValue().ordinal() % FaceValue.values().length ==

@@ -13,7 +13,7 @@ public class Card {
         return this.suit;
     }
 
-    Card(FaceValue faceValue, Suit suit) {
+    public Card(FaceValue faceValue, Suit suit) {
         this.faceValue = faceValue;
         this.suit = suit;
     }

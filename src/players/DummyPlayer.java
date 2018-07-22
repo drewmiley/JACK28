@@ -14,6 +14,7 @@ class DummyPlayer extends Player {
 
     @Override
     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
+        List<List<Card>> test = this.possibleCardsToPlay(rules, pile);
         List<Card> cardOptions = this.hand.stream()
                 .filter(d -> rules.isAllowedPlay(pile, Stream.of(d).collect(Collectors.toList())))
                 .collect(Collectors.toList());
