@@ -11,7 +11,7 @@ public class Pile {
     private int drawCardActiveRun = 0;
 
     public List<Card> getCardsBelowTopCard() {
-        return this.cards.subList(0, this.cards.size() - 2)
+        return this.cards.subList(0, this.cards.size() - 1)
                 .stream()
                 .filter(card -> card.getFaceValue() != null)
                 .collect(Collectors.toList());
