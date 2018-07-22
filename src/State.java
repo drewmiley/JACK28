@@ -31,8 +31,8 @@ class State {
         applySpecialCardRules(Stream.of(pile.topCard()).collect(Collectors.toList()), players.get(playerIndexTurn));
     }
 
-    boolean gameComplete() {
-        return this.players.stream().anyMatch(Player::handEmpty);
+    Player winner() {
+        return this.players.stream().filter(Player::handEmpty).findFirst().orElse(null);
     }
 
     void takeTurn() {

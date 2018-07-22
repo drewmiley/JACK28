@@ -1,5 +1,6 @@
 package players;
 
 public enum PlayerTypes {
-    DUMMY_PLAYER
+    DUMMY_PLAYER,
+    SIMPLE_PLAYER
 }

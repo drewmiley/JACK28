@@ -12,6 +12,9 @@ public class PlayerGenerator {
             case DUMMY_PLAYER:
                 player = new DummyPlayer(playerIndex, initialHand);
                 break;
+            case SIMPLE_PLAYER:
+                player = new SimplePlayer(playerIndex, initialHand);
+                break;
             default:
                 break;
         }
