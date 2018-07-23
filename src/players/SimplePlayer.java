@@ -13,16 +13,9 @@ class SimplePlayer extends Player {
 
     @Override
     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-        List<List<Card>> possibleCardsToPlay = this.possibleCardsToPlay(rules, pile);
-        int maxCardsToPlay = possibleCardsToPlay.stream()
-                .map(List::size)
-                .max(Comparator.comparingInt(a -> a))
-                .orElse(0);
-        List<List<Card>> possibleMaxCardsToPlay = possibleCardsToPlay.stream()
-                .filter(cards -> cards.size() == maxCardsToPlay)
-                .collect(Collectors.toList());
-        return possibleMaxCardsToPlay
-                .get((int) Math.floor(possibleMaxCardsToPlay.size() * Math.random()));
+        return this.possibleCardsToPlay(rules, pile).stream()
+                .max(Comparator.comparingInt(List::size))
+                .get();
     }
 
     @Override
