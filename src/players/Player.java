@@ -65,4 +65,6 @@ public abstract class Player {
     public boolean handEmpty() {
         return this.hand.isEmpty();
     }
+
+    public abstract PlayerType getPlayerType();
 }

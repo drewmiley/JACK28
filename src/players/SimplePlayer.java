@@ -38,4 +38,9 @@ class SimplePlayer extends Player {
                 .getKey();
     }
 
+    @Override
+    public PlayerType getPlayerType() {
+        return PlayerType.SIMPLE_PLAYER;
+    }
+
 }

@@ -4,38 +4,43 @@ import gamemodel.Pile;
 import gamemodel.Rules;
 import players.Player;
 import players.PlayerGenerator;
-import players.PlayerTypes;
+import players.PlayerType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class JACK28 {
 
     public static void main(String[] args) {
-        PlayerTypes[] PLAYER_TYPES = new PlayerTypes[]{
-                PlayerTypes.DUMMY_PLAYER,
-                PlayerTypes.SIMPLE_PLAYER,
-                PlayerTypes.DUMMY_PLAYER,
-                PlayerTypes.SIMPLE_PLAYER
+        PlayerType[] PLAYER_TYPES = new PlayerType[]{
+                PlayerType.DUMMY_PLAYER,
+                PlayerType.SIMPLE_PLAYER,
+                PlayerType.DUMMY_PLAYER,
+                PlayerType.SIMPLE_PLAYER
         };
         int INITIAL_HAND_SIZE = 7;
         int NUMBER_OF_GAMES = 1000;
-        List<String> winners = Arrays.stream(new Integer[NUMBER_OF_GAMES])
+        List<PlayerType> winners = Arrays.stream(new Integer[NUMBER_OF_GAMES])
                 .map(i -> {
                     State initialState = initialState(PLAYER_TYPES, INITIAL_HAND_SIZE);
                     State finalState = playGame(initialState);
-                    return finalState.winner().getClass().getSimpleName();
+                    return finalState.winner().getPlayerType();
                 })
                 .collect(Collectors.toList());
-        System.out.println("Simple Player Wins: " + winners.stream().filter(winner -> winner.equals("SimplePlayer")).count());
-        System.out.println("Dummy Player Wins: " + winners.stream().filter(winner -> winner.equals("DummyPlayer")).count());
+        Map<PlayerType, Long> winnersMap = Arrays.stream(PlayerType.values())
+                .collect(Collectors.toMap(pt -> pt,
+                        pt -> winners.stream()
+                                .filter(winner -> winner == pt)
+                                .count()
+                ));
+        System.out.println("Simple Player Wins: " + winnersMap.get(PlayerType.SIMPLE_PLAYER));
+        System.out.println("Dummy Player Wins: " + winnersMap.get(PlayerType.DUMMY_PLAYER));
     }
 
-    private static State initialState(PlayerTypes[] playerTypes, int initialHandSize) {
+    private static State initialState(PlayerType[] playerTypes, int initialHandSize) {
         Rules rules = new Rules();
         Deck deck = new Deck();
         Card topCard = deck.draw();

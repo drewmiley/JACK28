@@ -1,6 +1,6 @@
 package players;
 
-public enum PlayerTypes {
+public enum PlayerType {
     DUMMY_PLAYER,
     SIMPLE_PLAYER
 }

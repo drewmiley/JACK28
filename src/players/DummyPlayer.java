@@ -24,4 +24,9 @@ class DummyPlayer extends Player {
         return Suit.values()[(int) Math.floor(Suit.values().length * Math.random())];
     }
 
+    @Override
+    public PlayerType getPlayerType() {
+        return PlayerType.DUMMY_PLAYER;
+    }
+
 }

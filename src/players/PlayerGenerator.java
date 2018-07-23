@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PlayerGenerator {
 
-    public Player fromEnum(int playerIndex, List<Card> initialHand, PlayerTypes playerType) {
+    public Player fromEnum(int playerIndex, List<Card> initialHand, PlayerType playerType) {
         Player player = null;
         switch (playerType) {
             case DUMMY_PLAYER:
