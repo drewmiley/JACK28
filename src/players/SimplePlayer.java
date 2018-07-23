@@ -2,10 +2,8 @@ package players;
 
 import gamemodel.*;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class SimplePlayer extends Player {
 
@@ -15,15 +13,29 @@ class SimplePlayer extends Player {
 
     @Override
     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-        // TODO: Play max number of cards in a go
         List<List<Card>> possibleCardsToPlay = this.possibleCardsToPlay(rules, pile);
-        return possibleCardsToPlay.get((int) Math.floor(possibleCardsToPlay.size() * Math.random()));
+        int maxCardsToPlay = possibleCardsToPlay.stream()
+                .map(List::size)
+                .max(Comparator.comparingInt(a -> a))
+                .orElse(0);
+        List<List<Card>> possibleMaxCardsToPlay = possibleCardsToPlay.stream()
+                .filter(cards -> cards.size() == maxCardsToPlay)
+                .collect(Collectors.toList());
+        return possibleMaxCardsToPlay
+                .get((int) Math.floor(possibleMaxCardsToPlay.size() * Math.random()));
     }
 
     @Override
     public Suit nomination(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-        // TODO: Nominate suit with most cards in
-        return Suit.values()[(int) Math.floor(Suit.values().length * Math.random())];
+        Map<Suit, Long> suitTotals = Arrays.stream(Suit.values())
+                .collect(Collectors.toMap(s -> s,
+                        s -> hand.stream()
+                                .filter(card -> card.getSuit() == s)
+                                .count()));
+        return suitTotals.entrySet().stream()
+                .max(Comparator.comparingInt(a -> a.getValue().intValue()))
+                .get()
+                .getKey();
     }
 
 }

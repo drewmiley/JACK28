@@ -5,11 +5,11 @@ public class Card {
     private FaceValue faceValue;
     private Suit suit;
 
-    FaceValue getFaceValue() {
+    public FaceValue getFaceValue() {
         return this.faceValue;
     }
 
-    Suit getSuit() {
+    public Suit getSuit() {
         return this.suit;
     }
 
