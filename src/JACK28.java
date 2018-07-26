@@ -16,10 +16,10 @@ public class JACK28 {
 
     public static void main(String[] args) {
         PlayerType[] PLAYER_TYPES = new PlayerType[]{
-                PlayerType.DUMMY_PLAYER,
                 PlayerType.SIMPLE_PLAYER,
-                PlayerType.DUMMY_PLAYER,
-                PlayerType.SIMPLE_PLAYER
+                PlayerType.PROPORTIONAL_PLAYER,
+                PlayerType.SIMPLE_PLAYER,
+                PlayerType.PROPORTIONAL_PLAYER
         };
         int INITIAL_HAND_SIZE = 7;
         int NUMBER_OF_GAMES = 1000;
@@ -37,7 +37,7 @@ public class JACK28 {
                                 .count()
                 ));
         System.out.println("Simple Player Wins: " + winnersMap.get(PlayerType.SIMPLE_PLAYER));
-        System.out.println("Dummy Player Wins: " + winnersMap.get(PlayerType.DUMMY_PLAYER));
+        System.out.println("Proportional Player Wins: " + winnersMap.get(PlayerType.PROPORTIONAL_PLAYER));
     }
 
     private static State initialState(PlayerType[] playerTypes, int initialHandSize) {
