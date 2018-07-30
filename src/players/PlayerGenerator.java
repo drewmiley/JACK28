@@ -17,6 +17,10 @@ public class PlayerGenerator {
                 break;
             case PROPORTIONAL_PLAYER:
                 player = new ProportionalPlayer(playerIndex, initialHand);
+                break;
+            case HUMAN_PLAYER:
+                player = new HumanPlayer(playerIndex, initialHand);
+                break;
             default:
                 break;
         }

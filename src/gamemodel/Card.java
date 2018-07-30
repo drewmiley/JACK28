@@ -17,4 +17,9 @@ public class Card {
         this.faceValue = faceValue;
         this.suit = suit;
     }
+
+    @Override
+    public String toString() {
+        return this.getFaceValue().toString() + " " + this.getSuit().toString();
+    }
 }
