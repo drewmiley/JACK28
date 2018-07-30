@@ -20,6 +20,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return this.getFaceValue().toString() + " " + this.getSuit().toString();
+        return (this.getFaceValue() != null ? this.getFaceValue().toString() + " " : "") + this.getSuit().toString();
     }
 }

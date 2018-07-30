@@ -16,7 +16,7 @@ public class JACK28 {
 
     public static void main(String[] args) {
         PlayerType[] PLAYER_TYPES = new PlayerType[]{
-                PlayerType.HUMAN_PLAYER,
+                PlayerType.SIMPLE_PLAYER,
                 PlayerType.PROPORTIONAL_PLAYER,
                 PlayerType.SIMPLE_PLAYER,
                 PlayerType.PROPORTIONAL_PLAYER

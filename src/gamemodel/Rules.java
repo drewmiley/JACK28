@@ -22,10 +22,14 @@ public class Rules {
 
     private boolean firstCardValid(Pile pile, List<Card> cardsToPlay) {
         return !cardsToPlay.isEmpty() &&
-                ((pile.getDrawCardActiveRun() == 0 || cardsToPlay.get(0).getFaceValue() == DRAW_CARD) &&
-                (cardsToPlay.get(0).getFaceValue() == pile.topCard().getFaceValue() ||
-                        cardsToPlay.get(0).getSuit() == pile.topCard().getSuit()) ||
-                !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT);
+                (
+                        (pile.getDrawCardActiveRun() == 0 || cardsToPlay.get(0).getFaceValue() == DRAW_CARD) &&
+                        (
+                                (cardsToPlay.get(0).getFaceValue() == pile.topCard().getFaceValue() ||
+                                cardsToPlay.get(0).getSuit() == pile.topCard().getSuit()) ||
+                                !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT
+                        )
+                );
     }
 
     public boolean runValid(List<Card> cardPair, Pile pile) {
