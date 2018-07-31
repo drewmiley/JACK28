@@ -21,15 +21,13 @@ public class Rules {
     public final boolean RUN_DOWN_IN_SUIT = false;
 
     private boolean firstCardValid(Pile pile, List<Card> cardsToPlay) {
-        return !cardsToPlay.isEmpty() &&
-                (
-                        (pile.getDrawCardActiveRun() == 0 || cardsToPlay.get(0).getFaceValue() == DRAW_CARD) &&
-                        (
-                                (cardsToPlay.get(0).getFaceValue() == pile.topCard().getFaceValue() ||
-                                cardsToPlay.get(0).getSuit() == pile.topCard().getSuit()) ||
-                                !NOMINATE_SUIT_MUST_FOLLOW && cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT
-                        )
-                );
+        boolean drawCardValidPlay = pile.getDrawCardActiveRun() == 0 ||
+                cardsToPlay.get(0).getFaceValue() == DRAW_CARD;
+        boolean simpleFollowCard = cardsToPlay.get(0).getFaceValue() == pile.topCard().getFaceValue() ||
+                cardsToPlay.get(0).getSuit() == pile.topCard().getSuit();
+        boolean nominateSuitCard = !NOMINATE_SUIT_MUST_FOLLOW &&
+                cardsToPlay.get(0).getFaceValue() == NOMINATE_SUIT;
+        return drawCardValidPlay && (simpleFollowCard || nominateSuitCard);
     }
 
     public boolean runValid(List<Card> cardPair, Pile pile) {
@@ -61,7 +59,7 @@ public class Rules {
         return IntStream.range(0, cardsToPlay.size() - 1)
                 .mapToObj(i -> cardsToPlay.subList(i, i + 2))
                 .map(cardPair -> runValid(cardPair, pile))
-                .reduce(firstCardValid(pile, cardsToPlay), (a, b) -> a && b);
+                .reduce(!cardsToPlay.isEmpty() && firstCardValid(pile, cardsToPlay), (a, b) -> a && b);
     }
 
     public boolean isMissAGo(List<Card> cardsToPlay) {
