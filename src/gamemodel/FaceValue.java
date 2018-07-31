@@ -1,6 +1,6 @@
 package gamemodel;
 
-enum FaceValue {
+public enum FaceValue {
     ACE,
     TWO,
     THREE,

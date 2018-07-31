@@ -4,6 +4,7 @@ import gamemodel.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class ProportionalPlayer extends Player {
 
@@ -31,6 +32,29 @@ class ProportionalPlayer extends Player {
                 .max(Comparator.comparingInt(a -> a.getValue().intValue()))
                 .get()
                 .getKey();
+    }
+
+    private List<Card> unplayedCardsRemainingInGame(Pile pile, List<Card> hand) {
+        List<Card> cards = Stream.of(FaceValue.values())
+                .flatMap(faceValue -> Stream.of(Suit.values()).map(suit -> new Card(faceValue, suit)))
+                .collect(Collectors.toList());
+        cards.remove(pile.topCard());
+        cards.removeAll(pile.getCardsBelowTopCard());
+        cards.removeAll(hand);
+        return cards;
+    }
+
+    private Map<Suit, Long> suitProportionsAfterCardsPlayed(List<Card> unplayedCardsRemainingInGame,
+                                                            List<Card> hand,
+                                                            List<Card> cardsToPlay,
+                                                            List<FaceValue> faceValuesToIgnore) {
+        // TODO: Actually implement this correctly
+        Map<Suit, Long> suitTotals = Arrays.stream(Suit.values())
+                .collect(Collectors.toMap(s -> s,
+                        s -> hand.stream()
+                                .filter(card -> card.getSuit() == s)
+                                .count()));
+        return suitTotals;
     }
 
     @Override
