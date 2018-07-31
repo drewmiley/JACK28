@@ -14,22 +14,23 @@ class ProportionalPlayer extends Player {
 
     @Override
     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-        // TODO: Excluding JACK and 2 if possible, play the highest amount of cards that give highest proportion of a suit to play
-        return this.possibleCardsToPlay(rules, pile).stream()
+        // TODO: Excluding JACK and 2, play the highest amount of cards that give highest proportion of a suit to play
+        List<List<Card>> possibleCardsToPlay = this.possibleCardsToPlay(rules, pile);
+        return possibleCardsToPlay.stream()
                 .max(Comparator.comparingInt(List::size))
                 .get();
     }
 
     @Override
     public Suit nomination(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-        // TODO: Excluding JACK, nominate the suit that will leave you the greatest proportion of a suit that is left to play
-        Map<Suit, Long> suitTotals = Arrays.stream(Suit.values())
-                .collect(Collectors.toMap(s -> s,
-                        s -> hand.stream()
-                                .filter(card -> card.getSuit() == s)
-                                .count()));
-        return suitTotals.entrySet().stream()
-                .max(Comparator.comparingInt(a -> a.getValue().intValue()))
+        Map<Suit, Long> suitProportions = suitProportionsAfterCardsPlayed(
+                unplayedCardsRemainingInGame(pile, hand),
+                hand,
+                new ArrayList<>(),
+                Collections.singletonList(FaceValue.JACK)
+        );
+        return suitProportions.entrySet().stream()
+                .max(Comparator.comparingLong(Map.Entry::getValue))
                 .get()
                 .getKey();
     }
@@ -48,13 +49,22 @@ class ProportionalPlayer extends Player {
                                                             List<Card> hand,
                                                             List<Card> cardsToPlay,
                                                             List<FaceValue> faceValuesToIgnore) {
-        // TODO: Actually implement this correctly
-        Map<Suit, Long> suitTotals = Arrays.stream(Suit.values())
+        List<Card> unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.stream()
+                .filter(card -> !faceValuesToIgnore.contains(card.getFaceValue()))
+                .collect(Collectors.toList());
+        return Arrays.stream(Suit.values())
                 .collect(Collectors.toMap(s -> s,
-                        s -> hand.stream()
-                                .filter(card -> card.getSuit() == s)
-                                .count()));
-        return suitTotals;
+                        s -> {
+                            Long suitLeftInHand = hand.stream()
+                                    .filter(card -> !faceValuesToIgnore.contains(card.getFaceValue()) && !cardsToPlay.contains(card))
+                                    .filter(card -> card.getSuit() == s)
+                                    .count();
+                            Long suitLeftInGame = unPlayedCardsIgnoringFaceValues.stream()
+                                    .filter(card -> card.getSuit() == s)
+                                    .count();
+                            return suitLeftInHand / suitLeftInGame;
+                        })
+                );
     }
 
     @Override
