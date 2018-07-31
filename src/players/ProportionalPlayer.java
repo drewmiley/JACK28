@@ -14,29 +14,46 @@ class ProportionalPlayer extends Player {
 
     @Override
     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-        // TODO: Excluding JACK and 2, play the highest amount of cards that give highest proportion of a suit to play
         List<List<Card>> possibleCardsToPlay = this.possibleCardsToPlay(rules, pile);
         List<Card> unplayedCardsRemainingInGame = unplayedCardsRemainingInGame(pile, hand);
         Long maxCardsToPlaySize = possibleCardsToPlay.stream()
                 .mapToLong(List::size)
                 .max()
                 .getAsLong();
-        return possibleCardsToPlay.stream()
-                .max(Comparator.comparingInt(List::size))
-                .get();
+        Map<List<Card>, Double> maxSuitProportions = possibleCardsToPlay.stream()
+                .filter(cards -> cards.size() == maxCardsToPlaySize)
+                .collect(Collectors.toMap(c -> c,
+                    c -> {
+                        Map<Suit, Double> suitProportions = suitProportionsAfterCardsPlayed(
+                                unplayedCardsRemainingInGame,
+                                hand,
+                                c,
+                                Arrays.asList(FaceValue.TWO, FaceValue.JACK)
+                        );
+                        return suitProportions.entrySet().stream()
+                                .min(Comparator.comparingDouble(Map.Entry::getValue))
+                                .get()
+                                .getValue();
+
+                    })
+                );
+        return maxSuitProportions.entrySet().stream()
+                .max(Comparator.comparingDouble(Map.Entry::getValue))
+                .get()
+                .getKey();
     }
 
     @Override
     public Suit nomination(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
         List<Card> unplayedCardsRemainingInGame = unplayedCardsRemainingInGame(pile, hand);
-        Map<Suit, Long> suitProportions = suitProportionsAfterCardsPlayed(
+        Map<Suit, Double> suitProportions = suitProportionsAfterCardsPlayed(
                 unplayedCardsRemainingInGame,
                 hand,
                 new ArrayList<>(),
                 Collections.singletonList(FaceValue.JACK)
         );
         return suitProportions.entrySet().stream()
-                .max(Comparator.comparingLong(Map.Entry::getValue))
+                .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .get()
                 .getKey();
     }
@@ -51,22 +68,21 @@ class ProportionalPlayer extends Player {
         return cards;
     }
 
-    private Map<Suit, Long> suitProportionsAfterCardsPlayed(List<Card> unplayedCardsRemainingInGame,
+    private Map<Suit, Double> suitProportionsAfterCardsPlayed(List<Card> unplayedCardsRemainingInGame,
                                                             List<Card> hand,
                                                             List<Card> cardsToPlay,
                                                             List<FaceValue> faceValuesToIgnore) {
-        // TODO: This should take in suit
         List<Card> unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.stream()
                 .filter(card -> !faceValuesToIgnore.contains(card.getFaceValue()))
                 .collect(Collectors.toList());
         return Arrays.stream(Suit.values())
                 .collect(Collectors.toMap(s -> s,
                         s -> {
-                            Long suitLeftInHand = hand.stream()
+                            Double suitLeftInHand = (double) hand.stream()
                                     .filter(card -> !faceValuesToIgnore.contains(card.getFaceValue()) && !cardsToPlay.contains(card))
                                     .filter(card -> card.getSuit() == s)
                                     .count();
-                            Long suitLeftInGame = unPlayedCardsIgnoringFaceValues.stream()
+                            Double suitLeftInGame = (double) unPlayedCardsIgnoringFaceValues.stream()
                                     .filter(card -> card.getSuit() == s)
                                     .count();
                             return suitLeftInHand / suitLeftInGame;
