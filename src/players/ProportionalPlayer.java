@@ -16,6 +16,11 @@ class ProportionalPlayer extends Player {
     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
         // TODO: Excluding JACK and 2, play the highest amount of cards that give highest proportion of a suit to play
         List<List<Card>> possibleCardsToPlay = this.possibleCardsToPlay(rules, pile);
+        List<Card> unplayedCardsRemainingInGame = unplayedCardsRemainingInGame(pile, hand);
+        Long maxCardsToPlaySize = possibleCardsToPlay.stream()
+                .mapToLong(List::size)
+                .max()
+                .getAsLong();
         return possibleCardsToPlay.stream()
                 .max(Comparator.comparingInt(List::size))
                 .get();
@@ -23,8 +28,9 @@ class ProportionalPlayer extends Player {
 
     @Override
     public Suit nomination(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
+        List<Card> unplayedCardsRemainingInGame = unplayedCardsRemainingInGame(pile, hand);
         Map<Suit, Long> suitProportions = suitProportionsAfterCardsPlayed(
-                unplayedCardsRemainingInGame(pile, hand),
+                unplayedCardsRemainingInGame,
                 hand,
                 new ArrayList<>(),
                 Collections.singletonList(FaceValue.JACK)
@@ -49,6 +55,7 @@ class ProportionalPlayer extends Player {
                                                             List<Card> hand,
                                                             List<Card> cardsToPlay,
                                                             List<FaceValue> faceValuesToIgnore) {
+        // TODO: This should take in suit
         List<Card> unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.stream()
                 .filter(card -> !faceValuesToIgnore.contains(card.getFaceValue()))
                 .collect(Collectors.toList());
