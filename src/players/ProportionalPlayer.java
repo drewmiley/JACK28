@@ -20,6 +20,9 @@ class ProportionalPlayer extends Player {
                 .mapToLong(List::size)
                 .max()
                 .getAsLong();
+        if (maxCardsToPlaySize == 0) {
+            return new ArrayList<>();
+        }
         Map<List<Card>, Double> maxSuitProportions = possibleCardsToPlay.stream()
                 .filter(cards -> cards.size() == maxCardsToPlaySize)
                 .collect(Collectors.toMap(c -> c,
@@ -30,10 +33,12 @@ class ProportionalPlayer extends Player {
                                 c,
                                 Arrays.asList(FaceValue.TWO, FaceValue.JACK)
                         );
-                        return suitProportions.entrySet().stream()
-                                .min(Comparator.comparingDouble(Map.Entry::getValue))
-                                .get()
-                                .getValue();
+                        return c.get(c.size() - 1).getFaceValue() == rules.NOMINATE_SUIT ?
+                                suitProportions.entrySet().stream()
+                                    .min(Comparator.comparingDouble(Map.Entry::getValue))
+                                    .get()
+                                    .getValue() :
+                                suitProportions.get(c.get(c.size() - 1).getSuit());
 
                     })
                 );
